@@ -1,0 +1,72 @@
+<html>
+	<head>
+		<title>User Agent Switcher</title>
+		<script src="input.js"></script>
+		<style>
+			h1{
+				text-align:center;
+				font-size:22px;
+				margin-top:5px;
+				margin-bottom:15px;
+				padding:0;
+			}
+			.container{
+				width:450px;
+				
+			}
+			table th, table td{
+				border:1px solid black;
+			}
+			table{
+				border-collapse: collapse;
+				width:100%;
+				margin-bottom:20px;
+			}
+			tr.header{
+				text-align:center;
+				font-weight:bold;
+			}
+			th,td{
+				padding:5px;
+			}
+
+			.newRow{
+				width:100%;
+			}
+			.newRow .row{
+				float:left;
+				width:100%;
+				margin-bottom:20px;
+			}
+
+			.newRow .row label{
+				font-weight:bold;
+				float:left;
+				width:120px;
+				text-align:right;
+				display:block;
+				padding-right:10px;
+			}
+			.newRow .row input{
+				float:left;
+				display:block;
+			}
+			td.centreCell{
+				text-align:center;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+		<h1>User Agent Switcher</h1>
+		<table id="currentOptions">
+		
+		</table>
+		<div class="newRow">
+			<div class="row"><label for="domain">Domain Regular Expression</label><input type="text" id="domain" /></div>
+			<div class="row"><label for="userAgent">Associated User Agent</label><input type="text" id="userAgent" /></div>
+			<div class="row"><input type="submit" id="savebtn" value="Insert Row" /<</div>
+		</div>
+		</div>
+	</body>
+</html>
