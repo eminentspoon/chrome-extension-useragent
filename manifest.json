@@ -1,6 +1,6 @@
 		{
 	"manifest_version": 2,
-	"name": "Rule Based User Agent Switcher",
+	"name": "Regular Expression User Agent Switcher",
 	"description": "Switches user agent to specified one based upon URL rules",
 	"version": "1.0",
 	"browser_action":{
