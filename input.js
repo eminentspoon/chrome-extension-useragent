@@ -51,7 +51,7 @@ function bindValues(){
 		var domainHeader = headerRow.insertCell(0);
 		var agentHeader = headerRow.insertCell(1);
 		var actionHeader = headerRow.insertCell(2);
-		domainHeader.innerHTML = "Domain Reg Expr";
+		domainHeader.innerHTML = "Domain";
 		agentHeader.innerHTML = "Agent";
 		actionHeader.innerHTML = "Actions";
 		var existingValues = values.agents;
@@ -88,7 +88,7 @@ function bindValues(){
 			delButton.addEventListener('click', removeValue);
 			cell3.appendChild(delButton);
 		}
-	});	
+	});
 }
 
 function removeValue(object){
@@ -100,12 +100,12 @@ function removeValue(object){
 		chrome.storage.local.set({"agents": array}, function(){
 			bindValues();
 		});
-	});	
+	});
 }
 
 function init(){
 	bindValues();
-	
+
 	var save = document.getElementById("savebtn");
 	save.addEventListener('click', function(){
 		saveChanges();
