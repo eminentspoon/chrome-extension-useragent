@@ -1,4 +1,4 @@
-# chrome-extension-useragentspoofer
+User Agent Spoofer (Chrome Extension)
 
 A simple Chrome extension to conditionally spoof the user agent based upon domain / URL of the page visited
 
