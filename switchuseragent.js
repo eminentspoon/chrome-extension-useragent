@@ -21,7 +21,6 @@ listenerFunction = function (details) {
                 for (x = 0; x < headers.length; ++x) {
                     if (headers[x].name === "User-Agent") {
 						lastFiredTab = details.tabId;
-						chrome.tabs.getSelected(null, currentTabCheckFunction);
                         tabAssociation[details.tabId] = true;
                         headers[x].value = domainAgent[p].agent;
                         break;
@@ -30,6 +29,7 @@ listenerFunction = function (details) {
             }
         }
     }
+    chrome.tabs.getSelected(null, currentTabCheckFunction);
     blockingResponse.requestHeaders = headers;
     return blockingResponse;
 };
