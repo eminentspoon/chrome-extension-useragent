@@ -1,70 +1,37 @@
-<html>
+<!DOCTYPE html>
+	<html lang="en">
 	<head>
-		<title>User Agent Switcher</title>
+		<title>User Agent Spoofer</title>
+		<link type="text/css" rel="stylesheet" href="extension.css" />
 		<script src="input.js"></script>
-		<style>
-			h1{
-				text-align:center;
-				font-size:22px;
-				margin-top:5px;
-				margin-bottom:15px;
-				padding:0;
-			}
-			.container{
-				width:450px;
-
-			}
-			table th, table td{
-				border:1px solid black;
-			}
-			table{
-				border-collapse: collapse;
-				width:100%;
-				margin-bottom:20px;
-			}
-			tr.header{
-				text-align:center;
-				font-weight:bold;
-			}
-			th,td{
-				padding:5px;
-			}
-
-			.newRow{
-				width:100%;
-			}
-			.newRow .row{
-				float:left;
-				width:100%;
-				margin-bottom:20px;
-			}
-
-			.newRow .row label{
-				font-weight:bold;
-				float:left;
-				width:120px;
-				text-align:right;
-				display:block;
-				padding-right:10px;
-			}
-			.newRow .row input{
-				float:left;
-				display:block;
-			}
-			td.centreCell{
-				text-align:center;
-			}
-		</style>
 	</head>
+
 	<body>
 		<div class="container">
-		<h1>User Agent Switcher</h1>
-		<table id="currentOptions"><table>
-		<div class="newRow">
-			<div class="row"><label for="domain">Domain (e.g. '*//domain.com/*')</label><input type="text" id="domain" /></div>
-			<div class="row"><label for="userAgent">Associated User Agent</label><input type="text" id="userAgent" /></div>
-			<div class="row"><input type="submit" id="savebtn" value="Insert Row" /<</div>
+			<h1>User Agent Spoofer</h1>
+			<table id="currentOptions"></table>
+			<div class="fieldContainer">
+				<div class="row">
+					<label for="domainText">Domain Name<span title="Additional Information" class="infopop" data-infopoptitle="Domain Name Information" data-infopoptext="The entered domain name must not have the protocol. If you include additional URL paths such as 'myexampledomain.com/somethingHere', the user agent will only be amended on pages that match that URL path.<br/>Valid Examples<ul><li>myurl.com</li><li>myurl.com/only/filter/here</li></ul>Invalid Examples<ul><li>http://myurl.com</li>">?</span></label>
+					<input type="text" id="domainText" /><input type="button" id="selectCurrentDomain" value="Use Current Domain" />
+				</div>
+				<div class="clear"></div>
+				<div class="row">
+					<label for="userAgentText">Associated User Agent<span title="Additional Information" class="infopop" data-infopoptitle="User Agent Information" data-infopoptext="The user agent text can be anything but it is recommended that you use a 'proper' browsers user agent (like the provided IE11 / Firefox) as some websites detect your browser to determine what features to provide.">?</span></label>
+					<input type="text" id="userAgentText" />
+					<input type="button" id="setIEUserAgent" value="IE11" /><input id="setFirefoxUserAgent" type="button" value="Firefox" />
+				</div>
+				<div class="clear"></div>
+				<div class="submitRow">
+					<input type="submit" value="Insert Row" id="formSubmit" />
+				</div>
+			</div>
+			<div id="infopopup">
+				<h3 id="infopopHeader"></h3>
+				<p id="infopopText"></p>
+				<input type="button" id="closePop" value="Close" />
+			</div>
 		</div>
-		</div>
+		<div id="transLayer"></div>
 	</body>
 </html>

@@ -1,66 +1,84 @@
-var domainAgent;
+/*global chrome*/
+var domainAgent, listenerFunction, headers, p, x, i, extraInfoSpec, blockingResponse, buildUrlFilter, tabAssociation, agentOnIcon, agentOffIcon, currentTabCheckFunction, lastFiredTab;
+agentOnIcon = "images/agenton_38.png";
+agentOffIcon = "images/agentoff_38.png";
 
-chrome.storage.local.get('agents', function(value){
-	var urlFilter = new Array(), i,x,l,p,extraInfoSpec= ["requestHeaders", "blocking"];
-	domainAgent = value.agents;
-	for(i = 0; i < value.agents.length; i++){
-		urlFilter.push(value.agents[i].domain);
+currentTabCheckFunction = function(tab){
+	if(tab.id == lastFiredTab){
+		chrome.browserAction.setIcon({
+			path: agentOnIcon
+		});
 	}
+};
 
-	chrome.webRequest.onBeforeSendHeaders.addListener(function(details){
-		var headers = details.requestHeaders, blockingResponse = {};
-		if(domainAgent !== undefined){
-			for(p=0; p < domainAgent.length; p++){
-				if(patternToRegExp(domainAgent[p].domain).test(details.url)){
-					console.log("url matched with " + domainAgent[p].domain);
-					for(x = 0, l = headers.length; x < l; ++x){
-						if(headers[x].name === "User-Agent"){
-							headers[x].value = domainAgent[p].agent;
-							break;
-						}
-					}
-				}
-			}
-		}
-		blockingResponse.requestHeaders = headers;
-		return blockingResponse;
+listenerFunction = function (details) {
+    headers = details.requestHeaders;
+    blockingResponse = {};
+    tabAssociation[details.tabId] = false;
+    if (domainAgent !== undefined) {
+        for (p = 0; p < domainAgent.length; p++) {
+            if (details.url.indexOf(domainAgent[p].domain) > -1) {
+                for (x = 0; x < headers.length; ++x) {
+                    if (headers[x].name === "User-Agent") {
+						lastFiredTab = details.tabId;
+						chrome.tabs.getSelected(null, currentTabCheckFunction);
+                        tabAssociation[details.tabId] = true;
+                        headers[x].value = domainAgent[p].agent;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    blockingResponse.requestHeaders = headers;
+    return blockingResponse;
+};
 
-	}, { urls : urlFilter }, extraInfoSpec);
+tabAssociation = new Array();
+
+extraInfoSpec = ["requestHeaders", "blocking"];
+
+chrome.storage.local.get("agents", function (value) {
+    domainAgent = value.agents;
+    replaceAndBindHeaderListener();
 });
 
-function patternToRegExp(pattern){
-	if(pattern == "<all_urls>") return /^(?:http|https|file|ftp):\/\/.*/;
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+    if (namespace === "local") {
+        domainAgent = changes.agents.newValue;
+        replaceAndBindHeaderListener();
+    }
+});
 
-  var split = /^(\*|http|https|file|ftp):\/\/(.*)$/.exec(pattern);
-  if(!split) throw Error("Invalid schema in " + pattern);
-  var schema = split[1];
-  var fullpath = split[2];
+chrome.tabs.onCreated.addListener(function (tab) {
+    if (tabAssociation[String(tab.id)] === undefined) {
+        tabAssociation[String(tab.id)] = false;
+    }
+});
 
-  var split = /^([^\/]*)\/(.*)$/.exec(fullpath);
-  if(!split) throw Error("No path specified in " + pattern);
-  var host = split[1];
-  var path = split[2];
+chrome.tabs.onActivated.addListener(function (activeInfo) {
+    if (tabAssociation[activeInfo.tabId] === undefined) {
+        tabAssociation[activeInfo.tabId] = false;
+    }
 
-  // File
-  if(schema == "file" && host != "")
-    throw Error("Non-empty host for file schema in " + pattern);
+    var pathToSet = tabAssociation[activeInfo.tabId] ? agentOnIcon : agentOffIcon;
 
-  if(schema != "file" && host == "")
-    throw Error("No host specified in " + pattern);
+    chrome.browserAction.setIcon({
+        path: pathToSet
+    });
+});
 
-  if(!(/^(\*|\*\.[^*]+|[^*]*)$/.exec(host)))
-    throw Error("Illegal wildcard in host in " + pattern);
+function replaceAndBindHeaderListener() {
+    if (chrome.webRequest.onBeforeSendHeaders.hasListener(listenerFunction)) {
+        chrome.webRequest.onBeforeSendHeaders.removeListener(listenerFunction);
+    }
+    chrome.webRequest.onBeforeSendHeaders.addListener(listenerFunction, { urls: getUrlFilter() }, extraInfoSpec);
+}
 
-  var reString = "^";
-  reString += (schema == "*") ? "https*" : schema;
-  reString += ":\\/\\/";
-  // Not overly concerned with intricacies
-  //   of domain name restrictions and IDN
-  //   as we're not testing domain validity
-  reString += host.replace(/\*\.?/, "[^\\/]*");
-  reString += "\\/";
-  reString += path.replace("*", ".*");
-  reString += "$";
-
-  return RegExp(reString);
+function getUrlFilter() {
+    buildUrlFilter = new Array();
+    for (i = 0; i < domainAgent.length; i++) {
+        buildUrlFilter.push("*://*." + domainAgent[i].domain + "/*");
+    }
+    return buildUrlFilter;
 }

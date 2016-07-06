@@ -1,11 +1,13 @@
-		{
+{
 	"manifest_version": 2,
-	"name": "Regular Expression User Agent Switcher",
-	"description": "Switches user agent to specified one based upon URL rules",
-	"version": "1.0",
-	"browser_action":{
-		"default_icon": "0.png",
-		"default_title": "User Agent Switcher",
+	"name": "Chrome User Agent Spoofer",
+	"description": "Spoofs user agent to a specified one based upon user entered domains",
+	"version": "0.1",
+	"browser_action": {
+		"default_icon": {
+			"38": "images/agentoff_38.png"
+		},
+		"default_title": "User Agent Spoofer",
 		"default_popup": "overview.html"
 	},
 	"permissions": [
@@ -16,7 +18,9 @@
 		"<all_urls>"
 	],
 	"background": {
-		"scripts": ["switchuseragent.js"],
+		"scripts": [
+			"switchuseragent.js"
+		],
 		"persistent": true
 	}
 }
