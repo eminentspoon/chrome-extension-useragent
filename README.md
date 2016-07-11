@@ -1,6 +1,6 @@
 #User Agent Spoofer (Chrome Extension)
 
-A simple Chrome extension to conditionally spoof the user agent based upon domain / URL of the page visited
+A simple Chrome extension to conditionally spoof the user agent based upon the domain / URL of the page visited.
 
 **Note:** It is recommend to use a 'full featured' user agent (IE, Firefox etc) for the user agent as any pages that 'browser sniff' for features may cease to function as an unknown user agent is detected.
 
